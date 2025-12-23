@@ -100,8 +100,7 @@ const Calculator = () => {
 		const totalWeight = criteria.reduce((acc, c) => acc + c.weight, 0);
 		const C: number[][] = Array.from({ length: n }, () => Array(n).fill(0));
 		const D: number[][] = Array.from({ length: n }, () => Array(n).fill(0));
-		console.log({ C });
-		console.log({ D });
+
 		for (let i = 0; i < n; i++) {
 			for (let k = 0; k < n; k++) {
 				if (i === k) continue;
@@ -183,10 +182,10 @@ const Calculator = () => {
 	return (
 		<div className="max-w-4xl mx-auto py-12 px-6 space-y-8 antialiased">
 			<div className="space-y-2 border-b pb-6">
-				<h1 className="text-3xl font-extrabold tracking-tight">
-					SPK Metode ELECTRE
+				<h1 className="text-3xl font-extrabold tracking-tight text-center">
+					ELECTRE Calculator
 				</h1>
-				<p className="text-muted-foreground text-lg">
+				<p className="text-muted-foreground text-lg text-center">
 					Gunakan kriteria dan bobot untuk menentukan pilihan terbaik secara
 					objektif.
 				</p>
