@@ -391,104 +391,224 @@ const Calculator = () => {
 
 			{/* 4. HASIL AKHIR */}
 			{results && (
-				<div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-						<Card className="border-none bg-slate-100 shadow-inner">
-							<CardContent className="pt-6">
-								<div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-									Concordance Threshold
-								</div>
-								<div className="text-3xl font-black text-slate-800">
-									{results.cThreshold.toFixed(4)}
-								</div>
-							</CardContent>
-						</Card>
-						<Card className="border-none bg-slate-100 shadow-inner">
-							<CardContent className="pt-6">
-								<div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-									Discordance Threshold
-								</div>
-								<div className="text-3xl font-black text-slate-800">
-									{results.dThreshold.toFixed(4)}
-								</div>
-							</CardContent>
-						</Card>
-					</div>
-
-					<Card className="border-2 border-slate-900 overflow-hidden shadow-xl">
-						<CardHeader className="bg-slate-900 text-white">
+				<div className="space-y-10 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
+					{/* RANKING TERATAS */}
+					<Card className="border-primary/20 bg-primary/5 shadow-lg overflow-hidden">
+						<CardHeader className="bg-primary/10 border-b border-primary/10">
 							<div className="flex items-center gap-2">
-								<Trophy className="text-yellow-400" />
-								<CardTitle>Hasil Akhir & Ranking</CardTitle>
+								<Trophy className="w-6 h-6 text-yellow-600" />
+								<CardTitle>Hasil Rekomendasi Akhir</CardTitle>
 							</div>
+							<CardDescription className="text-primary/70">
+								Urutan alternatif berdasarkan nilai Aggregate Dominance (Matriks
+								E).
+							</CardDescription>
 						</CardHeader>
 						<CardContent className="p-0">
-							<div className="divide-y divide-slate-100">
-								{results.ranking.map((rank: any, i: number) => (
+							<div className="divide-y divide-primary/10">
+								{results.ranking.map((item: any, idx: number) => (
 									<div
-										key={i}
-										className="flex items-center justify-between p-5 hover:bg-slate-50 transition-colors"
+										key={idx}
+										className="flex items-center justify-between p-4 hover:bg-primary/5 transition-colors"
 									>
 										<div className="flex items-center gap-4">
 											<div
-												className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-lg ${
-													i === 0
-														? "bg-yellow-400 text-slate-900 ring-4 ring-yellow-100"
-														: "bg-slate-100 text-slate-500"
+												className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
+													idx === 0
+														? "bg-yellow-500 text-white"
+														: "bg-slate-200 text-slate-600"
 												}`}
 											>
-												{i + 1}
+												{idx + 1}
 											</div>
-											<div>
-												<div className="font-bold text-lg">{rank.name}</div>
-												<div className="text-xs text-slate-400 uppercase font-bold tracking-tight">
-													Skor Dominansi: {rank.score}
-												</div>
-											</div>
+											<span className="font-semibold text-lg">{item.name}</span>
 										</div>
-										{i === 0 && (
-											<Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200 py-1 px-3">
-												<CheckCircle2 className="w-3 h-3 mr-1" /> Rekomendasi
-												Utama
+										<div className="flex items-center gap-4">
+											<Badge
+												variant={idx === 0 ? "default" : "secondary"}
+												className="px-4 py-1"
+											>
+												Skor: {item.score}
 											</Badge>
-										)}
+											{idx === 0 && (
+												<CheckCircle2 className="text-green-600 w-6 h-6" />
+											)}
+										</div>
 									</div>
 								))}
 							</div>
 						</CardContent>
 					</Card>
 
-					<Card className="border-slate-200 opacity-60 grayscale hover:grayscale-0 transition-all">
-						<CardHeader>
-							<CardTitle className="text-sm uppercase tracking-widest font-bold text-slate-500">
-								Aggregate Dominance Matrix (E)
-							</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-2">
-								{results.E.map((row: any, i: number) => (
-									<div key={i} className="flex gap-2">
-										{row.map((val: number, j: number) => (
-											<div
-												key={j}
-												className={`flex-1 h-12 flex items-center justify-center rounded-md border text-sm font-bold ${
-													val === 1
-														? "bg-slate-900 text-white border-slate-900"
-														: "bg-white text-slate-200 border-slate-100"
-												}`}
-											>
-												{i === j ? "×" : val}
-											</div>
-										))}
-									</div>
-								))}
+					<div className="space-y-6">
+						<h2 className="text-2xl font-bold flex items-center gap-2">
+							<ChevronRight className="text-primary" /> Detail Proses
+							Perhitungan
+						</h2>
+
+						{/* STEP 1: MATRIKS AWAL & NORMALISASI */}
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<MatrixDisplay
+								title="Matriks Keputusan (X)"
+								data={results.X}
+								criteria={criteria}
+								choices={choices}
+							/>
+							<MatrixDisplay
+								title="Matriks Normalisasi (R)"
+								data={results.R}
+								criteria={criteria}
+								choices={choices}
+								isFloat
+							/>
+						</div>
+
+						{/* STEP 2: TERBOBOT & CONCORDANCE/DISCORDANCE */}
+						<MatrixDisplay
+							title="Matriks Normalisasi Terbobot (V)"
+							data={results.V}
+							criteria={criteria}
+							choices={choices}
+							isFloat
+						/>
+
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<div>
+								<MatrixDisplay
+									title="Matriks Concordance (C)"
+									data={results.C}
+									choices={choices}
+									isSquare
+									isFloat
+								/>
+								<div className="mt-2 p-3 bg-blue-50 border border-blue-100 rounded-lg text-sm flex justify-between">
+									<span className="font-medium">
+										Threshold Concordance (c):
+									</span>
+									<span className="font-bold text-blue-700">
+										{results.cThreshold.toFixed(4)}
+									</span>
+								</div>
 							</div>
-						</CardContent>
-					</Card>
+							<div>
+								<MatrixDisplay
+									title="Matriks Discordance (D)"
+									data={results.D}
+									choices={choices}
+									isSquare
+									isFloat
+								/>
+								<div className="mt-2 p-3 bg-orange-50 border border-orange-100 rounded-lg text-sm flex justify-between">
+									<span className="font-medium">
+										Threshold Discordance (d):
+									</span>
+									<span className="font-bold text-orange-700">
+										{results.dThreshold.toFixed(4)}
+									</span>
+								</div>
+							</div>
+						</div>
+
+						{/* STEP 3: DOMINANCE MATRICES */}
+						<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+							<MatrixDisplay
+								title="Concordance Dominance (F)"
+								data={results.F}
+								choices={choices}
+								isSquare
+								isBinary
+							/>
+							<MatrixDisplay
+								title="Discordance Dominance (G)"
+								data={results.G}
+								choices={choices}
+								isSquare
+								isBinary
+							/>
+							<MatrixDisplay
+								title="Aggregate Dominance (E)"
+								data={results.E}
+								choices={choices}
+								isSquare
+								isBinary
+								highlight
+							/>
+						</div>
+					</div>
 				</div>
 			)}
 		</div>
 	);
 };
+
+const MatrixDisplay = ({
+	title,
+	data,
+	criteria,
+	choices,
+	isFloat,
+	isSquare,
+	isBinary,
+	highlight,
+}: any) => (
+	<Card
+		className={`shadow-sm overflow-hidden ${
+			highlight ? "border-primary/50 ring-1 ring-primary/20" : ""
+		}`}
+	>
+		<CardHeader className="py-3 bg-slate-50 border-b">
+			<CardTitle className="text-sm font-bold uppercase tracking-wider text-slate-600">
+				{title}
+			</CardTitle>
+		</CardHeader>
+		<div className="overflow-x-auto">
+			<Table>
+				<TableHeader>
+					<TableRow className="bg-white hover:bg-white">
+						<TableHead className="w-10 bg-slate-50/50"></TableHead>
+						{isSquare
+							? choices.map((_: any, i: number) => (
+									<TableHead
+										key={i}
+										className="text-center text-[10px] font-bold"
+									>
+										A{i + 1}
+									</TableHead>
+							  ))
+							: criteria.map((c: any, i: number) => (
+									<TableHead
+										key={i}
+										className="text-center text-[10px] font-bold"
+									>
+										{c.name}
+									</TableHead>
+							  ))}
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					{data.map((row: any, i: number) => (
+						<TableRow key={i}>
+							<TableCell className="font-bold text-[10px] bg-slate-50/50 text-slate-500">
+								A{i + 1}
+							</TableCell>
+							{row.map((val: number, j: number) => (
+								<TableCell
+									key={j}
+									className={`text-center text-xs font-mono ${
+										isBinary && val === 1
+											? "text-blue-600 font-bold bg-blue-50/50"
+											: ""
+									}`}
+								>
+									{isFloat ? val.toFixed(4) : val}
+								</TableCell>
+							))}
+						</TableRow>
+					))}
+				</TableBody>
+			</Table>
+		</div>
+	</Card>
+);
 
 export default Calculator;
