@@ -31,6 +31,7 @@ import {
 	ChevronRight,
 	RotateCcw,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface Criterion {
 	name: string;
@@ -38,52 +39,15 @@ interface Criterion {
 	isNegative: boolean;
 }
 
-const Calculator = () => {
+const Calculator = ({ id }: { id: string }) => {
 	const [choices, setChoices] = useState<string[]>([
 		"Alternatif A",
 		"Alternatif B",
 		"Alternatif C",
 	]);
-	const [criteria, setCriteria] = useState<Criterion[]>([
-		{ name: "Kriteria 1", weight: 0, isNegative: false },
-	]);
+	const [criteria, setCriteria] = useState<Criterion[]>([]);
 	const [values, setValues] = useState<Record<string, number>>({});
 	const [results, setResults] = useState<any>(null);
-	const STORAGE_KEY = "electre_calculator_data";
-
-	const handleReset = () => {
-		if (window.confirm("Bersihkan semua data?")) {
-			setChoices(["Alternatif A", "Alternatif B", "Alternatif C"]);
-			setCriteria([{ name: "Kriteria 1", weight: 1, isNegative: false }]);
-			setValues({});
-			setResults(null);
-			localStorage.removeItem(STORAGE_KEY);
-		}
-	};
-	useEffect(() => {
-		const savedData = localStorage.getItem(STORAGE_KEY);
-		if (savedData) {
-			try {
-				const parsed = JSON.parse(savedData);
-				setChoices(parsed.choices || []);
-				setCriteria(parsed.criteria || []);
-				setValues(parsed.values || {});
-				if (parsed.results) setResults(parsed.results);
-			} catch (error) {
-				console.error("Gagal memuat data dari local storage", error);
-			}
-		}
-	}, []);
-
-	useEffect(() => {
-		const dataToSave = {
-			choices,
-			criteria,
-			values,
-			results, // opsional: simpan hasil agar tidak hilang saat refresh
-		};
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
-	}, [choices, criteria, values, results]);
 
 	const addChoice = () =>
 		setChoices([...choices, `Alternatif ${choices.length + 1}`]);
@@ -100,6 +64,21 @@ const Calculator = () => {
 
 	const updateValue = (cIdx: number, crIdx: number, val: string) => {
 		setValues({ ...values, [`${cIdx}-${crIdx}`]: parseFloat(val) || 0 });
+	};
+
+	useEffect(() => {
+		getTemplate();
+	}, []);
+
+	const getTemplate = async () => {
+		try {
+			const res = await fetch(`http://103.103.22.103:4001/api/template/${id}`);
+			const json = await res.json();
+			if (!res.ok) throw new Error(json.message);
+			setCriteria(json.data.kriteria);
+		} catch (err: any) {
+			toast.error(err.message || "Gagal memuat template");
+		}
 	};
 
 	const calculateELECTRE = () => {
@@ -220,14 +199,6 @@ const Calculator = () => {
 					Gunakan kriteria dan bobot untuk menentukan pilihan terbaik secara
 					objektif.
 				</p>
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={handleReset}
-					className="text-slate-400 hover:text-destructive"
-				>
-					<RotateCcw className="w-4 h-4 mr-2" /> Reset Data
-				</Button>
 			</div>
 
 			{/* SECTION KRITERIA */}
@@ -407,7 +378,6 @@ const Calculator = () => {
 											<input
 												type="number"
 												className="w-full h-12 text-center bg-transparent focus:bg-white focus:ring-2 focus:ring-blue-500/20 outline-none transition-all font-medium"
-												value={values[`${i}-${j}`]}
 												onChange={(e) => updateValue(i, j, e.target.value)}
 												placeholder="0"
 											/>

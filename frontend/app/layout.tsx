@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
 	title: "Create Next App",
@@ -17,6 +18,7 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={`font-patrick-hand antialiased`}>
 				<Navbar />
+				<Toaster />
 				<div className="my-20"></div>
 				{children}
 				<Footer />
