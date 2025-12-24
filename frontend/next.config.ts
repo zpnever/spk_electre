@@ -1,11 +1,10 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-	allowedDevOrigins: ["103.103.22.103"],
+const nextConfig = {
 	async rewrites() {
 		return [
 			{
-				source: "/api/:path*",
+				source: "/api-backend/:path*",
 				destination: "http://103.103.22.103:4001/api/:path*",
 			},
 		];
