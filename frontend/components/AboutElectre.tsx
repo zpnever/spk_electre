@@ -13,7 +13,7 @@ import {
 	XCircle,
 } from "lucide-react";
 import katex from "katex";
-// @ts-expect-error error ini
+// @ts-ignore
 import "katex/dist/katex.min.css";
 
 // Komponen Helper untuk merender Rumus agar tidak error
