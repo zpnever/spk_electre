@@ -72,9 +72,7 @@ const Calculator = ({ id }: { id: string }) => {
 
 	const getTemplate = async () => {
 		try {
-			const res = await fetch(
-				`http://103.103.22.103:4001/api-backend/template/${id}`
-			);
+			const res = await fetch(`/api-backend/template/${id}`);
 			const json = await res.json();
 			if (!res.ok) throw new Error(json.message);
 			setCriteria(json.data.kriteria);

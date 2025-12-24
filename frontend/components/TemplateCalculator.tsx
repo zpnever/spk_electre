@@ -56,9 +56,7 @@ const TemplateCalculator = () => {
 		try {
 			//
 			setLoading(true);
-			const res = await fetch(
-				"http://103.103.22.103:4001/api-backend/template"
-			);
+			const res = await fetch("/api-backend/template");
 			const json = await res.json();
 			if (!res.ok) throw new Error(json.message);
 			setTemplate(json.data);
@@ -75,14 +73,11 @@ const TemplateCalculator = () => {
 		}
 
 		try {
-			const res = await fetch(
-				"http://103.103.22.103:4001/api-backend/template",
-				{
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(createTemplate),
-				}
-			);
+			const res = await fetch("/api-backend/template", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(createTemplate),
+			});
 			const json = await res.json();
 
 			if (!res.ok) throw new Error(json.message);
