@@ -38,7 +38,6 @@ interface Criterion {
 }
 
 const Calculator = () => {
-	// --- State ---
 	const [choices, setChoices] = useState<string[]>([
 		"Alternatif A",
 		"Alternatif B",
@@ -52,7 +51,6 @@ const Calculator = () => {
 	const [values, setValues] = useState<Record<string, number>>({});
 	const [results, setResults] = useState<any>(null);
 
-	// --- Handlers ---
 	const addChoice = () =>
 		setChoices([...choices, `Alternatif ${choices.length + 1}`]);
 	const deleteChoice = (index: number) =>
@@ -70,7 +68,6 @@ const Calculator = () => {
 		setValues({ ...values, [`${cIdx}-${crIdx}`]: parseFloat(val) || 0 });
 	};
 
-	// --- Logika ELECTRE ---
 	const calculateELECTRE = () => {
 		const n = choices.length;
 		const m = criteria.length;
@@ -84,7 +81,7 @@ const Calculator = () => {
 		);
 
 		console.log({ X });
-		// 1. Normalisasi (R)
+		// Normalisasi (R)
 		const R: number[][] = Array.from({ length: n }, () => Array(m).fill(0));
 		for (let j = 0; j < m; j++) {
 			const sumSq = Math.sqrt(
@@ -93,10 +90,10 @@ const Calculator = () => {
 			for (let i = 0; i < n; i++) R[i][j] = X[i][j] / (sumSq || 1);
 		}
 		console.log({ R });
-		// 2. Normalisasi Terbobot (V)
+		// Normalisasi Terbobot (V)
 		const V = R.map((row) => row.map((val, j) => val * criteria[j].weight));
 		console.log({ V });
-		// 3. Matriks Concordance (C) & Discordance (D)
+		// Matriks Concordance (C) & Discordance (D)
 		const totalWeight = criteria.reduce((acc, c) => acc + c.weight, 0);
 		const C: number[][] = Array.from({ length: n }, () => Array(n).fill(0));
 		const D: number[][] = Array.from({ length: n }, () => Array(n).fill(0));
@@ -132,13 +129,13 @@ const Calculator = () => {
 		console.log({ C });
 		console.log({ D });
 
-		// 4. Thresholds
+		// Thresholds
 		const totalComparisons = n * (n - 1);
 		const cThreshold = C.flat().reduce((a, b) => a + b, 0) / totalComparisons;
 		const dThreshold = D.flat().reduce((a, b) => a + b, 0) / totalComparisons;
 		console.log({ cThreshold });
 		console.log({ dThreshold });
-		// 5. Matriks F (Concordance Dominance)
+		// Matriks F (Concordance Dominance)
 		const F = C.map((row, i) =>
 			row.map((val, j) => {
 				if (i === j) return 0;
@@ -148,7 +145,7 @@ const Calculator = () => {
 
 		console.log({ F });
 
-		// 6. Matriks G (Discordance Dominance)
+		// Matriks G (Discordance Dominance)
 		const G = D.map((row, i) =>
 			row.map((val, j) => {
 				if (i === j) return 0;
@@ -158,7 +155,7 @@ const Calculator = () => {
 
 		console.log({ G });
 
-		// 7. Matriks E (Aggregate Dominance) = F ∩ G
+		// Matriks E (Aggregate Dominance) = F ∩ G
 		const E: number[][] = F.map((row, i) =>
 			row.map((val, j) => {
 				if (i === j) return 0;
@@ -168,7 +165,7 @@ const Calculator = () => {
 
 		console.log({ E });
 
-		// 8. Final Ranking
+		// Final Ranking
 		const ranking = choices
 			.map((name, i) => ({
 				name,
@@ -191,11 +188,11 @@ const Calculator = () => {
 				</p>
 			</div>
 
-			{/* 1. SECTION KRITERIA */}
+			{/* SECTION KRITERIA */}
 			<Card className="shadow-sm border-slate-200">
 				<CardHeader className="flex flex-row items-center justify-between space-y-0">
 					<div>
-						<CardTitle>1. Kriteria & Bobot</CardTitle>
+						<CardTitle>Kriteria & Bobot</CardTitle>
 						<CardDescription>
 							Atur parameter penilaian dan sifat kriteria.
 						</CardDescription>
@@ -291,11 +288,11 @@ const Calculator = () => {
 				</CardContent>
 			</Card>
 
-			{/* 2. SECTION ALTERNATIF */}
+			{/* SECTION ALTERNATIF */}
 			<Card className="shadow-sm border-slate-200">
 				<CardHeader className="flex flex-row items-center justify-between space-y-0">
 					<div>
-						<CardTitle>2. Daftar Alternatif</CardTitle>
+						<CardTitle>Daftar Alternatif</CardTitle>
 						<CardDescription>
 							Masukkan nama objek atau kandidat yang akan dinilai.
 						</CardDescription>
@@ -332,10 +329,10 @@ const Calculator = () => {
 				</CardContent>
 			</Card>
 
-			{/* 3. MATRIKS KEPUTUSAN */}
+			{/* MATRIKS KEPUTUSAN */}
 			<Card className="shadow-sm border-slate-200 overflow-hidden">
 				<CardHeader>
-					<CardTitle>3. Matriks Keputusan</CardTitle>
+					<CardTitle>Matriks Keputusan</CardTitle>
 					<CardDescription>
 						Berikan penilaian angka untuk setiap kriteria pada alternatif.
 					</CardDescription>
@@ -388,7 +385,7 @@ const Calculator = () => {
 				</CardContent>
 			</Card>
 
-			{/* 4. HASIL AKHIR */}
+			{/* HASIL AKHIR */}
 			{results && (
 				<div className="space-y-10 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
 					{/* RANKING TERATAS */}
@@ -445,7 +442,7 @@ const Calculator = () => {
 							Perhitungan
 						</h2>
 
-						{/* STEP 1: MATRIKS AWAL & NORMALISASI */}
+						{/* MATRIKS AWAL & NORMALISASI */}
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<MatrixDisplay
 								title="Matriks Keputusan (X)"
@@ -462,7 +459,7 @@ const Calculator = () => {
 							/>
 						</div>
 
-						{/* STEP 2: TERBOBOT & CONCORDANCE/DISCORDANCE */}
+						{/* TERBOBOT & CONCORDANCE/DISCORDANCE */}
 						<MatrixDisplay
 							title="Matriks Normalisasi Terbobot (V)"
 							data={results.V}
@@ -508,7 +505,7 @@ const Calculator = () => {
 							</div>
 						</div>
 
-						{/* STEP 3: DOMINANCE MATRICES */}
+						{/* DOMINANCE MATRICES */}
 						<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 							<MatrixDisplay
 								title="Concordance Dominance (F)"

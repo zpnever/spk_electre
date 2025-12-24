@@ -16,16 +16,24 @@ const About = () => {
 		{
 			name: "Naylah Haniifah Ramadhani",
 			id: "1512623003",
-			src: "",
+			src: "/profile/naylah.jpeg",
 		},
-		{ name: "Defa Rahmita Rifqi R.", id: "1512623005", src: "" },
-		{ name: "Muhammad Akhyar", id: "1512623020", src: "" },
-		{ name: "Danu Suko Handiyanto", id: "1512623038", src: "" },
-		{ name: "Nabila Aristi", id: "1512623040", src: "" },
+		{
+			name: "Defa Rahmita Rifqi R.",
+			id: "1512623005",
+			src: "/profile/depa.jpeg",
+		},
+		{ name: "Muhammad Akhyar", id: "1512623020", src: "/profile/akhyar.jpeg" },
+		{
+			name: "Danu Suko Handiyanto",
+			id: "1512623038",
+			src: "/profile/danu.jpeg",
+		},
+		{ name: "Nabila Aristi", id: "1512623040", src: "/profile/nabila.jpeg" },
 		{
 			name: "Ganendra Rizky Deniartra",
 			id: "1512623044",
-			src: "",
+			src: "/profile/ganen.jpeg",
 		},
 	];
 
@@ -102,14 +110,15 @@ const About = () => {
 							className="overflow-hidden border-slate-100 hover:shadow-xl transition-shadow group"
 						>
 							{/* Placeholder Tempat Foto Anggota [cite: 475] */}
-							<div className="aspect-[4/5] bg-slate-200 flex items-center justify-center relative overflow-hidden">
+							<div className="aspect-[4/5] bg-slate-200 relative overflow-hidden">
 								<Image
 									src={member.src}
 									alt={member.name}
-									width={100}
-									height={100}
+									fill
+									className="object-cover"
 								/>
 							</div>
+
 							<CardContent className="p-5 text-center">
 								<h3 className="font-bold text-lg text-slate-800">
 									{member.name}
