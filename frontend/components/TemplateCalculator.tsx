@@ -61,7 +61,7 @@ const TemplateCalculator = () => {
 			if (!res.ok) throw new Error(json.message);
 			setTemplate(json.data);
 		} catch (err: any) {
-			toast.error(err.message || "Gagal memuat template");
+			toast.error("Gagal memuat template");
 		} finally {
 			setLoading(false);
 		}
@@ -110,7 +110,7 @@ const TemplateCalculator = () => {
 	const filteredTemplates = template.filter(
 		(t) =>
 			t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			t.creator.toLowerCase().includes(searchTerm.toLowerCase())
+			t.creator.toLowerCase().includes(searchTerm.toLowerCase()),
 	);
 
 	return (
@@ -270,7 +270,7 @@ const TemplateCalculator = () => {
 			</div>
 
 			{/* Template Grid */}
-			{loading ? (
+			{loading ?
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 					{[1, 2, 3].map((i) => (
 						<div
@@ -279,8 +279,7 @@ const TemplateCalculator = () => {
 						/>
 					))}
 				</div>
-			) : (
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			:	<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 					{filteredTemplates.map((t, idx) => (
 						<Card
 							key={idx}
@@ -335,7 +334,7 @@ const TemplateCalculator = () => {
 						</Card>
 					))}
 				</div>
-			)}
+			}
 		</div>
 	);
 };

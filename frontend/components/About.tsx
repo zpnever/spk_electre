@@ -131,16 +131,6 @@ const About = () => {
 					))}
 				</div>
 			</section>
-
-			{/* Tech Stack yang Digunakan [cite: 48, 264] */}
-			<section className="pt-10 border-t border-slate-100">
-				<div className="flex flex-wrap justify-center gap-8 opacity-60 grayscale hover:grayscale-0 transition-all">
-					<div className="flex items-center gap-2 font-bold text-slate-500">
-						<Code2 size={20} /> Built with: TypeScript, Next.js, React, Express,
-						PostgreSQL & Prisma
-					</div>
-				</div>
-			</section>
 		</div>
 	);
 };
